@@ -17,8 +17,8 @@ public class UserController {
 
     @PostMapping("/signup")
     public String SignUp(@RequestBody UserModel user) {
-        userService.signUp(user);
-        return "Signup Successful";
+        return userService.signUp(user);
+        
     }
 
     @PostMapping("/auth")

@@ -1,7 +1,5 @@
 package com.authentication.login.Service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,30 +11,34 @@ public class UserService {
     @Autowired
     private UserRepo userRepository;
 
-    public void signUp(UserModel userModel) {
+    public String signUp(UserModel userModel) {
         
         try {
+            UserModel user = userRepository.findByUserName(userModel.getUserName());
+            if(user==null){
+                String hashedPassword = PasswordUtil.encodePassword(userModel.getPassword());
+            userModel.setPassword(hashedPassword);
             userRepository.save(userModel);
+            return "Signup Successful";
+            }
+            else{
+                return "User already exists";
+            }
+            
         } catch (Exception e) {
-           System.out.println(e.getMessage());
+           return e.getMessage();
         }
     }
 
     public boolean authenticate(String userName,String password)
     {
-        List<UserModel> userModel = userRepository.findByUserName(userName);
-        if (userModel.isEmpty()) {
+        UserModel userModel = userRepository.findByUserName(userName);
+        if (userModel==null) {
             return false;
         }
         else
         {
-            if (password.equals(userModel.get(0).getPassword())) {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return PasswordUtil.checkPassword(password,userModel.getPassword());
         }
     } 
 }
