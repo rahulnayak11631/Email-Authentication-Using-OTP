@@ -1,6 +1,8 @@
 package com.authentication.login.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.authentication.login.Model.UserModel;
@@ -10,8 +12,8 @@ import com.authentication.login.Repositories.UserRepo;
 public class UserService {
     @Autowired
     private UserRepo userRepository;
-
-    public String signUp(UserModel userModel) {
+    
+    public ResponseEntity<String> signUp(UserModel userModel) {
         
         try {
             UserModel user = userRepository.findByUserName(userModel.getUserName());
@@ -19,17 +21,18 @@ public class UserService {
                 String hashedPassword = PasswordUtil.encodePassword(userModel.getPassword());
             userModel.setPassword(hashedPassword);
             userRepository.save(userModel);
-            return "Signup Successful";
+            return ResponseEntity.status(HttpStatus.OK).body("Signup Successful");
             }
             else{
-                return "User already exists";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exists");
             }
             
         } catch (Exception e) {
-           return e.getMessage();
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
+    
     public boolean authenticate(String userName,String password)
     {
         UserModel userModel = userRepository.findByUserName(userName);
