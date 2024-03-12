@@ -8,12 +8,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@Table(name = "Email_Verification")
 @Entity
-public class UserModel {
+
+public class EmailModel {
      @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -22,11 +25,10 @@ public class UserModel {
     private UUID id;
 
     @NotNull
-    // @Size(min= 5 , max=13)
-    private String userName;
+    private String email;
 
-    @NotNull
-    // @Size(min = 5,max = 13)
-    private String password;
+    private String OTP;
+
+    private boolean verified;
 
 }
