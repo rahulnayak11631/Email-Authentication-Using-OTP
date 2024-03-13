@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.authentication.login.Model.EmailModel;
+import com.authentication.login.Repositories.EmailRepository;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class EmailAuthService {
 
     @Autowired
-    private com.authentication.login.Repositories.EmailRepository EmailRepository;
+    private EmailRepository EmailRepository;
 
     @Autowired
     private JavaMailSender javaMailSender; // Autowire JavaMailSender
@@ -43,9 +44,6 @@ public class EmailAuthService {
             session.setAttribute("OTP", OTP);
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            
-            System.out.println(sender);
-            System.out.println(password);
             helper.setTo(email);
             helper.setSubject("OTP for Email Authentication");
             helper.setFrom(sender);
@@ -69,10 +67,19 @@ public class EmailAuthService {
     }
 
     public void updateVerificationStatus(String email) {
-        EmailModel model = EmailRepository.findByEmail(email);
-        if (model != null) {
-            model.setVerified(true);
-            EmailRepository.save(model);
+        try {
+            EmailModel model = EmailRepository.findByEmail(email);
+            if (model != null) {
+                model.setVerified(true);
+                model.setEmail(email);
+                EmailRepository.save(model);
+            }
+            else
+            {
+                System.out.println("Lowda");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
     }

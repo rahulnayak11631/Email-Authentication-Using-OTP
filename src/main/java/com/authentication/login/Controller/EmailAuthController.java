@@ -1,6 +1,5 @@
 package com.authentication.login.Controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.authentication.login.Model.EmailModel;
+import com.authentication.login.Repositories.EmailRepository;
 import com.authentication.login.Service.EmailAuthService;
 
 import jakarta.mail.MessagingException;
@@ -16,7 +17,12 @@ import jakarta.servlet.http.HttpSession;
 @RestController
 public class EmailAuthController {
     @Autowired
-    EmailAuthService service;
+    private EmailAuthService service;
+
+
+    @Autowired
+    private EmailRepository emailRepository;
+    
 
     public EmailAuthController(EmailAuthService emailAuthService) {
         this.service = emailAuthService;
@@ -25,6 +31,9 @@ public class EmailAuthController {
     @PostMapping("/sendOTP")
     public ResponseEntity<String> sendOTP(@RequestHeader String email, HttpSession session) {
         try {
+            EmailModel model = new EmailModel();
+            model.setEmail(email);
+            emailRepository.save(model);
             service.sendOTP(email, session);
             return ResponseEntity.ok("OTP sent to " + email);
         } catch (MessagingException e) {
