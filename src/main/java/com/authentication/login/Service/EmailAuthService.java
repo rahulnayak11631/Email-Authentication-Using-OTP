@@ -26,8 +26,6 @@ public class EmailAuthService {
 
     @Value("${spring.mail.username}")
     private String sender;
-    @Value("${spring.mail.password}")
-    private String password;
 
 
     private int generateOTP() {
@@ -76,7 +74,7 @@ public class EmailAuthService {
             }
             else
             {
-                System.out.println("Lowda");
+                System.out.println("Error!!!");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
