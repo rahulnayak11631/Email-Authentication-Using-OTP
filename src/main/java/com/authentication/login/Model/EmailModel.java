@@ -1,5 +1,6 @@
 package com.authentication.login.Model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -17,7 +18,7 @@ import lombok.Data;
 @Entity
 
 public class EmailModel {
-     @Id
+    @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "user_id")
@@ -27,8 +28,8 @@ public class EmailModel {
     @NotNull
     private String email;
 
-    private String OTP;
+    private int OTP;
 
-    private boolean verified;
+    private LocalDateTime createdAt;
 
 }
